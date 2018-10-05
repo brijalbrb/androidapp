@@ -1,0 +1,44 @@
+{
+  "id": "1",
+  "link": "https://youtu.be/X7YOkjO3EZc",
+  "string": "My first video",
+  "info": "",
+  "array": [
+    {
+      "link": "https://thumb.ibb.co/hGTcCK/Screen_Shot_2018_09_18_at_2_18_23_PM.png",
+      "text": "Oh hi guys my name is Kelsey and my name is Becky and we're the star girls",
+      "start": "0:35",
+      "step_teime": 2.5
+    },
+    {
+      "link": "https://thumb.ibb.co/kE466e/Screen_Shot_2018_09_18_at_2_17_39_PM.png",
+      "text": "and today we have another Halloween tutorial for you proceed own a horse we",
+      "start": "0:65",
+      "step_teime": 2
+    },
+    {
+      "link": "",
+      "text": "another hugely requested one this year so of course we had to do it soon cause it's like every year it has been and all",
+      "start": "1:35",
+      "step_teime": 3.5
+    },
+    {
+      "link": "",
+      "text": "cause it's like every year it has been and all the other years like this new movie",
+      "start": "2:35",
+      "step_teime": 3
+    },
+    {
+      "link": "",
+      "text": "bodysuit would have been impossible or",
+      "start": "3:35",
+      "step_teime": 4.5
+    },
+    {
+      "link": "",
+      "text": "out next year so we've heard a lot about",
+      "start": "4:39",
+      "step_teime": 3
+    }
+  ]
+}

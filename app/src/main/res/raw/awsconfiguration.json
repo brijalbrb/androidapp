@@ -1,0 +1,54 @@
+{
+  "UserAgent": "MobileHub/1.0",
+  "Version": "1.0",
+  "CredentialsProvider": {
+    "CognitoIdentity": {
+      "Default": {
+        "PoolId": "us-east-1:d63115a9-5bb4-4789-8631-b66043235db6",
+        "Region": "us-east-1"
+      }
+    }
+  },
+  "IdentityManager": {
+    "Default": {}
+  },
+  "S3TransferUtility": {
+    "Default": {
+      "Bucket": "diyvi-userfiles-mobilehub-1727673198",
+      "Region": "us-east-1"
+    }
+  },
+  "DynamoDBObjectMapper": {
+    "Default": {
+      "Region": "us-east-1"
+    }
+  },
+  "ContentManager": {
+    "Default": {
+      "Bucket": "diyvi-hosting-mobilehub-1727673198",
+      "Region": "us-east-1",
+      "CloudFrontURL": "https://de6te29pxvjg1.cloudfront.net"
+    }
+  },
+  "PinpointAnalytics": {
+    "Default": {
+      "AppId": "5e4048182eb749a7997c43030b8b5de4",
+      "Region": "us-east-1"
+    }
+  },
+  "PinpointTargeting": {
+    "Default": {
+      "Region": "us-east-1"
+    }
+  },
+  "UserFileManager": {
+    "Default": {
+      "Bucket": "diyvi-userfiles-mobilehub-1727673198",
+      "Region": "us-east-1"
+    }
+  },
+  "FacebookSignIn": {
+    "AppId": "326072154822295",
+    "Permissions": "public_profile"
+  }
+}
