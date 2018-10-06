@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+    <LinearLayout xmlns:fancy="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        tools:context=".activity.VideoSnapActivity">
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.google.android.youtube.player.YouTubePlayerView
+                android:id="@+id/youtube_playerS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:configChanges="orientation|keyboardHidden" />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/btn_snapShot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:background="#5942af"
+            android:paddingRight="20dp"
+            android:textColor="#fff"
+            android:paddingBottom="10dp"
+            android:text="Take Snapshot"
+            fancy:fb_borderColor="#000000"
+            android:drawableLeft="@drawable/ic_fullscreen_black_24dp"
+            fancy:fb_borderWidth="1dp"
+            fancy:fb_defaultColor="#628797"
+            fancy:fb_focusColor="#ffffff"
+            fancy:fb_iconPosition="left"
+            fancy:fb_radius="30dp"
+            fancy:fb_text="Take Snapshot"
+            fancy:fb_textColor="#FFFFFF" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:id="@+id/ivSnapShot"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="28dp" />
+
+            <Button
+                android:id="@+id/btn_saveSnap"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:background="#44995f"
+                android:textColor="#fff"
+                android:layout_marginTop="35dp"
+                android:layout_toRightOf="@+id/ivSnapShot"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="10dp"
+                android:text="Save"
+                android:drawableLeft="@drawable/ic_save_black_24dp"
+                fancy:fb_borderColor="#000000"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_defaultColor="#6fc487"
+                fancy:fb_focusColor="#ffffff"
+                fancy:fb_fontIconResource="&#xf5cb;"
+                fancy:fb_iconPosition="left"
+                fancy:fb_radius="30dp"
+                fancy:fb_text="Save Snap"
+                fancy:fb_textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/btn_deleteSnap"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/btn_saveSnap"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:drawableLeft="@drawable/ic_delete_forever_black_24dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:background="#f11919"
+                android:textColor="#fff"
+                android:layout_toRightOf="@+id/ivSnapShot"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="10dp"
+                android:text="Delete"
+                fancy:fb_borderColor="#000000"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_defaultColor="#e44548"
+                fancy:fb_focusColor="#ffffff"
+                fancy:fb_fontIconResource="&#xf5cb;"
+                fancy:fb_iconPosition="left"
+                fancy:fb_radius="30dp"
+                fancy:fb_text="Delete Snap"
+                fancy:fb_textColor="#FFFFFF" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/view1"
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:layout_marginTop="10dp"
+            android:background="#353535" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:text="Taken Snapshots"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+    </ScrollView>
+</layout>
