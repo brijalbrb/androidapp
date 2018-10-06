@@ -70,7 +70,13 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         binding = DataBindingUtil.setContentView(activity, R.layout.activity_main);
         binding.youtubePlayer.initialize(API_KEY, (YouTubePlayer.OnInitializedListener) activity);
 
-
+        binding.btnSnapShot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, VideoSnapActivity.class);
+                startActivity(intent);
+            }
+        });
         try {
 
             JSONObject obj = new JSONObject(loadJSONFromAsset());
