@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.HomeActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,6 +40,9 @@
             android:enabled="true" />
 
         <activity android:name=".activity.VideoSnapActivity">
+
+        </activity>
+        <activity android:name=".activity.MainActivity">
 
         </activity>
     </application>
