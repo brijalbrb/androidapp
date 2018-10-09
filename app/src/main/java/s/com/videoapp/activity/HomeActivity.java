@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,14 +82,11 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(List<VideoItem> aVoid) {
-
+            super.onPostExecute(aVoid);
             adapter = new HomeAdapter(activity, aVoid);
             binding.rvHome.setLayoutManager(new GridLayoutManager(activity, 2));
             binding.rvHome.setAdapter(adapter);
             binding.pb.setVisibility(View.GONE);
-
-
-            super.onPostExecute(aVoid);
         }
     }
 
@@ -129,6 +127,7 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final HomeActivity.HomeAdapter.MyViewHolder holder, final int position) {
+
             final VideoItem videoinfo = videoData.get(position);
 
 
@@ -142,15 +141,19 @@ public class HomeActivity extends AppCompatActivity {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(activity,MainActivity.class));
+
+                    startActivity(new Intent(activity,MainActivity.class)
+                            .putExtra("videoID",videoinfo.link)
+                            .putExtra("videoTitle",videoinfo.videoTitle).putExtra("taskArray", (Serializable) videoinfo.taskArray));
                 }
             });
-
         }
 
         @Override
         public int getItemCount() {
-            return videoData.size();
+
+            return videoData == null? 0 : videoData.size();
+
         }
     }
 

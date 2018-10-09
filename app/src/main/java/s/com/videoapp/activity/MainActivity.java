@@ -22,8 +22,6 @@ import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,21 +39,22 @@ import s.com.videoapp.aws.DynamoDBManager;
 import s.com.videoapp.databinding.ActivityMainBinding;
 import s.com.videoapp.databinding.RowVideoBinding;
 import s.com.videoapp.pojo.VideoItem;
-import s.com.videoapp.pojo.Videopojo;
 import s.com.videoapp.utils.StoreUserData;
 
 public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
 
     public static final String API_KEY = "AIzaSyBee6u0yAUUV6kiqA9W0u3YH1rG_WTKCpo";
-    public String VIDEO_ID = "RAOJ0b0iWBg";
+    // public String VIDEO_ID = "RAOJ0b0iWBg";
     Activity activity;
     int duration;
+    String videoId;
     ActivityMainBinding binding;
     StoreUserData storeUserData;
     private static final int RECOVERY_REQUEST = 1;
     private YouTubePlayerView youTubeView;
     YouTubePlayer youTubePlayer;
     VideoAdapter adapter;
+    ArrayList<VideoItem.Tasks> tasktArray;
 
     private AmazonClientManager amazonClientManager;
     private DynamoDBManager dynamoDBManager;
@@ -70,6 +69,13 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         binding = DataBindingUtil.setContentView(activity, R.layout.activity_main);
         binding.youtubePlayer.initialize(API_KEY, (YouTubePlayer.OnInitializedListener) activity);
 
+        videoId = getIntent().getStringExtra("videoID");
+
+        tasktArray = (ArrayList<VideoItem.Tasks>) getIntent().getSerializableExtra("taskArray");
+
+        Log.i("taskArray", tasktArray.toString());
+        Log.i("videoId", videoId);
+
         binding.btnSnapShot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,11 +86,11 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         try {
 
             JSONObject obj = new JSONObject(loadJSONFromAsset());
-            binding.tvTitle.setText(obj.getString("string"));
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
-            Videopojo request = gson.fromJson(obj.toString(), Videopojo.class);
-            adapter = new VideoAdapter(activity, request.getArray());
+            //binding.tvTitle.setText(obj.getString("string"));
+
+            binding.tvTitle.setText(getIntent().getStringExtra("videoTitle"));
+
+            adapter = new VideoAdapter(activity, tasktArray);
             binding.rvVideo.setLayoutManager(new GridLayoutManager(this, 3));
             binding.rvVideo.setAdapter(adapter);
 
@@ -191,13 +197,12 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
     }
 
 
-
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
         if (null == youTubePlayer) return;
         if (!wasRestored) {
             this.youTubePlayer = youTubePlayer;
-            this.youTubePlayer.cueVideo(VIDEO_ID);
+            this.youTubePlayer.cueVideo(videoId.substring(17));
         }
     }
 
@@ -222,15 +227,8 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
 
     public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder> {
 
-        private List<Videopojo.ArrayBean> videoData;
+        private List<VideoItem.Tasks> videoData;
         Activity activity;
-        StoreUserData storeUserData;
-
-        public VideoAdapter(ArrayList<Videopojo.ArrayBean> items) {
-            super();
-            storeUserData = new StoreUserData(activity);
-            this.videoData = items;
-        }
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             RowVideoBinding binding;
@@ -242,7 +240,7 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         }
 
 
-        public VideoAdapter(Activity activity, List<Videopojo.ArrayBean> videoData) {
+        public VideoAdapter(Activity activity, List<VideoItem.Tasks> videoData) {
             this.videoData = videoData;
             this.activity = activity;
         }
@@ -256,14 +254,13 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
 
         @Override
         public void onBindViewHolder(final VideoAdapter.MyViewHolder holder, final int position) {
-            final Videopojo.ArrayBean videoinfo = videoData.get(position);
 
-            holder.binding.tvVideoTitle.setText(videoinfo.getText());
+            final VideoItem.Tasks videoinfo = videoData.get(position);
+            holder.binding.tvVideoTitle.setText(videoinfo.text);
             holder.binding.tvMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i("message","ok");
-
+                    Log.i("message", "ok");
 
                     final Dialog dialog = new Dialog(activity);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -271,21 +268,20 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
                     dialog.setCanceledOnTouchOutside(true);
                     dialog.setContentView(R.layout.dialog);
 
-                    TextView text = (TextView) dialog.findViewById(R.id.tvVideoTitle);
-                    text.setText(videoinfo.getText());
-
+                    TextView text = dialog.findViewById(R.id.tvVideoTitle);
+                    text.setText(videoinfo.text);
                     ImageView videoImage = dialog.findViewById(R.id.imgVideo);
 
                     Glide.with(activity).
-                            load(videoinfo.getLink()).
+                            load(videoinfo.link).
                             into(videoImage);
 
-                    TextView step = (TextView) dialog.findViewById(R.id.tvStep);
-                    text.setText(videoinfo.getText());
+                    TextView step = dialog.findViewById(R.id.tvStep);
+                    text.setText(videoinfo.text);
 
-                    int stp = position+1;
-                    for (int i=0;i<stp;i++){
-                        step.setText("Step "+stp);
+                    int stp = position + 1;
+                    for (int i = 0; i < stp; i++) {
+                        step.setText("Step " + stp);
                     }
 
                     ImageView closeImage = dialog.findViewById(R.id.imgClose);
@@ -297,23 +293,24 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
                     });
 
                     dialog.show();
-
                 }
             });
 
             Glide.with(activity).
-                    load(videoinfo.getLink()).
+                    load(videoinfo.link).
                     into(holder.binding.imgVideo);
 
-            int size = position+1;
-            for (int i=0;i<size;i++){
-                holder.binding.tvStep.setText("Step "+size);
+            int size = position + 1;
+            for (int i = 0; i < size; i++) {
+                holder.binding.tvStep.setText("Step " + size);
             }
 
             holder.binding.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String time = videoinfo.getStart();
+
+                    String time = videoinfo.start;
+
                     String[] units = time.split(":");
                     int minutes = Integer.parseInt(units[0]);
                     int seconds = Integer.parseInt(units[1]);
@@ -326,7 +323,8 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
 
         @Override
         public int getItemCount() {
-            return videoData.size();
+
+            return videoData == null ? 0 : videoData.size();
         }
     }
 }

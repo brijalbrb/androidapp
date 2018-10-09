@@ -1,7 +1,6 @@
 package s.com.videoapp.aws;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.document.Table;
@@ -156,42 +155,45 @@ public class DatabaseAccess {
      */
     public List<VideoItem> getAllVideos() {
 
-        ScanRequest scanRequest = new ScanRequest()
-                .withTableName(DYNAMODB_TABLE);
+
+        ScanRequest scanRequest = new ScanRequest().withTableName(DYNAMODB_TABLE);
         ScanResult result = dbClient.scan(scanRequest);
+
 
         List<VideoItem> videoItems = new ArrayList<>();
 
-
         for (Map<String, AttributeValue> item : result.getItems()) {
 
-            String link,videoThumbnail,year,task,videoTitle;
 
-            //for (int i=0; i<item.size(); i++){
-
-
-                link = item.get("link").getS();
-                videoThumbnail =  item.get("videoThumbnail").getS();
-                year = item.get("year").getN();
-                task = item.get("tasks").getS();
-                videoTitle = item.get("videoTitle").getS();
+            String link, videoThumbnail, year, videoTitle, userId;
+            link = item.get("link").getS();
+            videoThumbnail = item.get("videoThumbnail").getS();
+            year = item.get("year").getN();
+            videoTitle = item.get("videoTitle").getS();
+            userId = item.get("userId").getS();
 
 
-                Log.i("dtat", String.valueOf(item));
-
-                VideoItem videoItem = new VideoItem();
-                videoItem.link = link;
-                videoItem.videoThumbnail = videoThumbnail;
-                videoItem.year = Integer.parseInt(year);
-                videoItem.tasks = task;
-                videoItem.videoTitle = videoTitle;
-
-                videoItems.add(videoItem);
+            VideoItem videoItem = new VideoItem();
+            videoItem.link = link;
+            videoItem.videoThumbnail = videoThumbnail;
+            videoItem.year = Integer.parseInt(year);
+            videoItem.videoTitle = videoTitle;
+            videoItem.userId = userId;
 
 
+            for (int i = 0; i < item.get("tasks").getL().size(); i++) {
+
+                VideoItem.Tasks taskinfo = new VideoItem.Tasks();
+                taskinfo.text = item.get("tasks").getL().get(i).getM().get("text").getS();
+                taskinfo.start = item.get("tasks").getL().get(i).getM().get("start").getS();
+                taskinfo.link = item.get("tasks").getL().get(i).getM().get("link").getS();
+
+                videoItem.taskArray.add(taskinfo);
+            }
+
+            videoItems.add(videoItem);
 
 
-            //}
         }
         return videoItems;
     }

@@ -9,17 +9,12 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.media.MediaDataSource;
 import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,10 +42,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
-import mehdi.sakout.fancybuttons.FancyButton;
 import s.com.videoapp.R;
 import s.com.videoapp.aws.CrashHandler;
 import s.com.videoapp.aws.DatabaseAccess;
@@ -76,7 +69,6 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
     VideoAdapter adapter;
     Bitmap bitmap;
     DatabaseAccess databaseAccess;
-    ImageAdapter imageAdapter;
     MediaMetadataRetriever mediaMetadataRetriever;
 
     @Override
@@ -87,16 +79,11 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
         mediaMetadataRetriever = new MediaMetadataRetriever();
         btnSnap = findViewById(R.id.btn_snapShot);
         btnSave = findViewById(R.id.btn_saveSnap);
-        btnDelete =(Button)findViewById(R.id.btn_deleteSnap);
+        btnDelete = (Button) findViewById(R.id.btn_deleteSnap);
         ivSnaps = findViewById(R.id.ivSnapShot);
         storeUserData = new StoreUserData(activity);
         binding = DataBindingUtil.setContentView(activity, R.layout.activity_video_snap);
         binding.youtubePlayerS.initialize(API_KEY, (YouTubePlayer.OnInitializedListener) activity);
-
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-//        binding.rvImageSnap.setLayoutManager(mLayoutManager);
-//        binding.rvImageSnap.setItemAnimator(new DefaultItemAnimator());
-
 
         binding.btnSnapShot.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,8 +94,6 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
                 bitmap = Bitmap.createBitmap(v1.getDrawingCache());
                 v1.setDrawingCacheEnabled(false);
                 binding.ivSnapShot.setImageBitmap(bitmap);
-//                imageAdapter = new ImageAdapter(bitmap);
-//                binding.rvImageSnap.setAdapter(imageAdapter);
             }
         });
 
@@ -116,23 +101,21 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
             @Override
             public void onClick(View view) {
                 ContextWrapper wrapper = new ContextWrapper(getApplicationContext());
-                File file = wrapper.getDir("Images",MODE_PRIVATE);
-                file = new File(file, System.currentTimeMillis()+".jpg");
+                File file = wrapper.getDir("Images", MODE_PRIVATE);
+                file = new File(file, System.currentTimeMillis() + ".jpg");
                 try {
                     OutputStream stream = null;
                     stream = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                     stream.flush();
                     stream.close();
-                }
-                catch (IOException e) // Catch the exception
-                {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 Uri savedImageURI = Uri.parse(file.getAbsolutePath());
 
 
-                Toast.makeText(getApplicationContext(), "Image has been Saved to\n "+ savedImageURI, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Image has been Saved to\n " + savedImageURI, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -146,7 +129,6 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
         try {
 
             JSONObject obj = new JSONObject(loadJSONFromAsset());
-//            binding.tvTitleS.setText(obj.getString("string"));
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.create();
             Videopojo request = gson.fromJson(obj.toString(), Videopojo.class);
@@ -158,10 +140,9 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
 
         setupAWSMobileClient();
     }
+
     private void setupAWSMobileClient() {
         try {
-//            amazonClientManager = new AmazonClientManager(activity);
-//            dynamoDBManager = new DynamoDBManager(activity);
 
             CrashHandler.installHandler(this);
 
@@ -172,16 +153,14 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
         }
     }
 
-    public static Bitmap createVideoThumbnail(Context context, Uri uri, int i)
-    {
+    public static Bitmap createVideoThumbnail(Context context, Uri uri, int i) {
         MediaMetadataRetriever mediametadataretriever = new MediaMetadataRetriever();
 
         try {
             mediametadataretriever.setDataSource(context, uri);
             Bitmap bitmap = mediametadataretriever.getFrameAtTime(-1L);
-            if(null != bitmap)
-            {
-//                int j = getThumbnailSize(context, i);
+            if (null != bitmap) {
+
                 return ThumbnailUtils.extractThumbnail(bitmap, 150, 150, 2);
             }
             return bitmap;
@@ -189,71 +168,22 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
             // TODO log
             return null;
         } finally {
-            try
-            {
+            try {
                 mediametadataretriever.release();
+            } catch (RuntimeException e) {
             }
-            catch(RuntimeException e) { }
         }
     }
 
 
-
     public static Bitmap takeSnapshot(View givenView, int width, int height) {
-        Bitmap bm = Bitmap.createBitmap(width , height, Bitmap.Config.ARGB_8888);
+        Bitmap bm = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas snap = new Canvas(bm);
         givenView.layout(0, 0, givenView.getLayoutParams().width, givenView.getLayoutParams().height);
         givenView.draw(snap);
-        return bm;  }
+        return bm;
+    }
 
-//    private void downloadWithTransferUtility() {
-//
-//        TransferUtility transferUtility =
-//                TransferUtility.builder()
-//                        .context(getApplicationContext())
-//                        .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
-//                        .s3Client(new AmazonS3Client(AWSMobileClient.getInstance().getCredentialsProvider()))
-//                        .build();
-//
-//        TransferObserver downloadObserver =
-//                transferUtility.download(
-//                        "public/s3Key.txt",
-//                        new File("/path/to/file/localFile.txt"));
-//
-//        // Attach a listener to the observer to get state update and progress notifications
-//        downloadObserver.setTransferListener(new TransferListener() {
-//
-//            @Override
-//            public void onStateChanged(int id, TransferState state) {
-//                if (TransferState.COMPLETED == state) {
-//                    // Handle a completed upload.
-//                }
-//            }
-//
-//            @Override
-//            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-//                float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
-//                int percentDone = (int) percentDonef;
-//
-//                Log.d("Your Activity", "   ID:" + id + "   bytesCurrent: " + bytesCurrent + "   bytesTotal: " + bytesTotal + " " + percentDone + "%");
-//            }
-//
-//            @Override
-//            public void onError(int id, Exception ex) {
-//                // Handle errors
-//            }
-//
-//        });
-//
-//        // If you prefer to poll for the data, instead of attaching a
-//        // listener, check for the state and progress in the observer.
-//        if (TransferState.COMPLETED == downloadObserver.getState()) {
-//            // Handle a completed upload.
-//        }
-//
-//        Log.d("Your Activity", "Bytes Transferred: " + downloadObserver.getBytesTransferred());
-//        Log.d("Your Activity", "Bytes Total: " + downloadObserver.getBytesTotal());
-//    }
 
     private class GetDataTask extends AsyncTask<Void, Void, Void> {
 
@@ -322,13 +252,7 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
 
         private List<Videopojo.ArrayBean> videoData;
         Activity activity;
-        StoreUserData storeUserData;
 
-        public VideoAdapter(ArrayList<Videopojo.ArrayBean> items) {
-            super();
-            storeUserData = new StoreUserData(activity);
-            this.videoData = items;
-        }
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             RowVideoBinding binding;
@@ -349,7 +273,6 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
         public VideoSnapActivity.VideoAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.row_video, parent, false);
-//            return new MainActivity.VideoAdapter.MyViewHolder(itemView);
             return null;
         }
 
@@ -362,7 +285,7 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
             holder.binding.tvMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i("message","ok");
+                    Log.i("message", "ok");
 
 
                     final Dialog dialog = new Dialog(activity);
@@ -371,7 +294,7 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
                     dialog.setCanceledOnTouchOutside(true);
                     dialog.setContentView(R.layout.dialog);
 
-                    TextView text = (TextView) dialog.findViewById(R.id.tvVideoTitle);
+                    TextView text = dialog.findViewById(R.id.tvVideoTitle);
                     text.setText(videoinfo.getText());
 
                     ImageView videoImage = dialog.findViewById(R.id.imgVideo);
@@ -380,12 +303,12 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
                             load(videoinfo.getLink()).
                             into(videoImage);
 
-                    TextView step = (TextView) dialog.findViewById(R.id.tvStep);
+                    TextView step = dialog.findViewById(R.id.tvStep);
                     text.setText(videoinfo.getText());
 
-                    int stp = position+1;
-                    for (int i=0;i<stp;i++){
-                        step.setText("Step "+stp);
+                    int stp = position + 1;
+                    for (int i = 0; i < stp; i++) {
+                        step.setText("Step " + stp);
                     }
 
                     ImageView closeImage = dialog.findViewById(R.id.imgClose);
@@ -405,9 +328,9 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
                     load(videoinfo.getLink()).
                     into(holder.binding.imgVideo);
 
-            int size = position+1;
-            for (int i=0;i<size;i++){
-                holder.binding.tvStep.setText("Step "+size);
+            int size = position + 1;
+            for (int i = 0; i < size; i++) {
+                holder.binding.tvStep.setText("Step " + size);
             }
 
             holder.binding.cardView.setOnClickListener(new View.OnClickListener() {
