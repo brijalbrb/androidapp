@@ -12,14 +12,6 @@
   "IdentityManager": {
     "Default": {}
   },
-  "CognitoUserPool": {
-    "Default": {
-      "PoolId": "us-east-1_5DXWcK7Fc",
-      "AppClientId": "32hqahev96cadf9vn2rqp86a48",
-      "AppClientSecret": "1himj58in900t9cj48mcvrevvckcolie1df9r03b2jb8i7suriq5",
-      "Region": "us-east-1"
-    }
-  },
   "S3TransferUtility": {
     "Default": {
       "Bucket": "diyvi-userfiles-mobilehub-1727673198",
@@ -54,10 +46,6 @@
       "Bucket": "diyvi-userfiles-mobilehub-1727673198",
       "Region": "us-east-1"
     }
-  },
-  "GoogleSignIn": {
-    "ClientId-WebApp": "AIzaSyD26B-Rx6TE2unCfcoRn9oRLrW7ysgCr2o",
-    "Permissions": "email,profile,openid"
   },
   "FacebookSignIn": {
     "AppId": "326072154822295",

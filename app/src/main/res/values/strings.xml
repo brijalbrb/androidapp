@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">VideoApp</string>
+    <string name="server_error">Server Error</string>
+    <string name="facebook_app_id">326072154822295</string>
+    <string name="fb_login_protocol_scheme">fb326072154822295</string>
 </resources>
