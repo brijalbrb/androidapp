@@ -13,6 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.amazonaws.mobile.auth.ui.SignInUI;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.client.AWSStartupHandler;
+import com.amazonaws.mobile.client.AWSStartupResult;
 import com.bumptech.glide.Glide;
 
 import java.io.Serializable;
@@ -20,10 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import s.com.videoapp.R;
-import s.com.videoapp.aws.AmazonClientManager;
 import s.com.videoapp.aws.CrashHandler;
 import s.com.videoapp.aws.DatabaseAccess;
-import s.com.videoapp.aws.DynamoDBManager;
 import s.com.videoapp.databinding.ActivityHomeBinding;
 import s.com.videoapp.databinding.RowHomeBinding;
 import s.com.videoapp.pojo.VideoItem;
@@ -35,9 +37,6 @@ public class HomeActivity extends AppCompatActivity {
     private Activity activity;
     private DatabaseAccess databaseAccess;
     HomeAdapter adapter;
-    private AmazonClientManager amazonClientManager;
-    private DynamoDBManager dynamoDBManager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +46,27 @@ public class HomeActivity extends AppCompatActivity {
 
         setupAWSMobileClient();
 
+        findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AWSMobileClient.getInstance().initialize(activity, new AWSStartupHandler() {
+                    @Override
+                    public void onComplete(AWSStartupResult awsStartupResult) {
+                        SignInUI signin = (SignInUI) AWSMobileClient.getInstance().getClient(
+                                activity,
+                                SignInUI.class);
+                        signin.login(
+                                activity,
+                                HomeActivity.class).execute();
+                    }
+                }).execute();
+            }
+        });
+
     }
 
     private void setupAWSMobileClient() {
         try {
-            amazonClientManager = new AmazonClientManager(activity);
-            dynamoDBManager = new DynamoDBManager(activity);
             CrashHandler.installHandler(this);
             new GetDataTask().execute();
         } catch (Exception e) {
@@ -135,7 +149,7 @@ public class HomeActivity extends AppCompatActivity {
             holder.binding.tvTitle.setText(String.valueOf(videoinfo.year));
 
             Glide.with(activity).
-                    load(videoinfo.videoThumbnail).
+                    load("https://img.youtube.com/vi/" + videoinfo.link.substring(17)+"/hqdefault.jpg").
                     into(holder.binding.imgVideo);
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {

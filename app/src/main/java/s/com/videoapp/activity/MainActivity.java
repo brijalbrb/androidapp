@@ -44,7 +44,7 @@ import s.com.videoapp.utils.StoreUserData;
 public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
 
     public static final String API_KEY = "AIzaSyBee6u0yAUUV6kiqA9W0u3YH1rG_WTKCpo";
-    // public String VIDEO_ID = "RAOJ0b0iWBg";
+
     Activity activity;
     int duration;
     String videoId;

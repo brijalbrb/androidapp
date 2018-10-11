@@ -28,17 +28,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         activity = this;
         storeUserData = new StoreUserData(activity);
 
-        AWSMobileClient.getInstance().initialize(this, new AWSStartupHandler() {
-            @Override
-            public void onComplete(AWSStartupResult awsStartupResult) {
-                SignInUI signin = (SignInUI) AWSMobileClient.getInstance().getClient(
-                        activity,
-                        SignInUI.class);
-                signin.login(
-                        activity,
-                        MainActivity.class).execute();
-            }
-        }).execute();
+
     }
 
     @Override
