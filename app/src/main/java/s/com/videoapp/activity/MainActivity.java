@@ -92,7 +92,6 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
 
         Log.i("taskArray", tasktArray.toString());
         Log.i("videoId", videoId);
-
         binding.btnSnapShot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
