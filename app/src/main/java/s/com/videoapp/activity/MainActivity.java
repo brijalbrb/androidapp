@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -24,6 +25,8 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.bumptech.glide.Glide;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareButton;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -90,10 +93,24 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
                 startActivity(intent);
             }
         });
-        try {
 
-            JSONObject obj = new JSONObject(loadJSONFromAsset());
-            //binding.tvTitle.setText(obj.getString("string"));
+
+//        this is a share with facebook mock
+            // Finding the facebook share button
+        ShareButton shareButton = (ShareButton)findViewById(R.id.fb_share_button);
+            // Sharing the content to facebook
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                // Setting the title that will be shared
+                .setContentTitle("I am HT")
+                // Setting the description that will be shared
+                .setContentDescription("We did it!")
+                // Setting the URL that will be shared
+                .setContentUrl(Uri.parse("https://justa128.github.io/dubai-tour-guide/landingpage/"))
+                // Setting the image that will be shared
+                .setImageUrl(Uri.parse("https://img.freepik.com/free-vector/tel-aviv-skyline_1116-182.jpg"))
+                .build();
+        shareButton.setShareContent(content);
+
 
             binding.tvTitle.setText(getIntent().getStringExtra("videoTitle"));
 
@@ -101,9 +118,6 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
             binding.rvVideo.setLayoutManager(new GridLayoutManager(this, 3));
             binding.rvVideo.setAdapter(adapter);
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
         setupAWSMobileClient();
     }
@@ -187,22 +201,6 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
             }
             return null;
         }
-    }
-
-    public String loadJSONFromAsset() {
-        String json = null;
-        try {
-            InputStream is = activity.getAssets().open("videoapi.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
     }
 
 

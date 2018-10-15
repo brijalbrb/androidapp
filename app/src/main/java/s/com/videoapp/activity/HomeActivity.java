@@ -18,6 +18,7 @@ import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.AWSStartupHandler;
 import com.amazonaws.mobile.client.AWSStartupResult;
 import com.bumptech.glide.Glide;
+import com.facebook.FacebookSdk;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         activity = this;
         binding = DataBindingUtil.setContentView(activity, R.layout.activity_home);
         storeUserData = new StoreUserData(activity);
