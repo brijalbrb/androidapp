@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.amazonaws.mobile.auth.core.IdentityManager;
 import com.amazonaws.mobile.auth.ui.SignInUI;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.AWSStartupHandler;
@@ -29,6 +31,7 @@ import s.com.videoapp.aws.DatabaseAccess;
 import s.com.videoapp.databinding.ActivityHomeBinding;
 import s.com.videoapp.databinding.RowHomeBinding;
 import s.com.videoapp.pojo.VideoItem;
+import s.com.videoapp.utils.Constants;
 import s.com.videoapp.utils.StoreUserData;
 
 public class HomeActivity extends AppCompatActivity {
@@ -49,22 +52,49 @@ public class HomeActivity extends AppCompatActivity {
         findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AWSMobileClient.getInstance().initialize(activity, new AWSStartupHandler() {
-                    @Override
-                    public void onComplete(AWSStartupResult awsStartupResult) {
-                        SignInUI signin = (SignInUI) AWSMobileClient.getInstance().getClient(
-                                activity,
-                                SignInUI.class);
+                if (!storeUserData.getBoolean(Constants.IS_LOGGED_IN)) {
+                    storeUserData.setBoolean(Constants.IS_LOGGED_IN, true);
+                    AWSMobileClient.getInstance().initialize(activity, new AWSStartupHandler() {
+                        @Override
+                        public void onComplete(AWSStartupResult awsStartupResult) {
 
-                        signin.login(
-                                activity,
-                                HomeActivity.class).execute();
+                            SignInUI signin = (SignInUI) AWSMobileClient.getInstance().getClient(
+                                    activity,
+                                    SignInUI.class);
+
+                            signin.login(
+                                    activity,
+                                    HomeActivity.class).execute();
+
+                        }
+                    }).execute();
+                } else {
+                    storeUserData.setBoolean(Constants.IS_LOGGED_IN, false);
+                    try {
+                        IdentityManager.getDefaultIdentityManager().signOut();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }).execute();
+                    binding.login.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.avatar));
+                }
             }
         });
-        
+        if (storeUserData.getBoolean(Constants.IS_LOGGED_IN)) {
+            binding.login.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.avatar));
+        } else {
+            binding.login.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.password));
+        }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (storeUserData.getBoolean(Constants.IS_LOGGED_IN)) {
+            binding.login.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.avatar));
+        } else {
+            binding.login.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.password));
+        }
     }
 
     private void setupAWSMobileClient() {

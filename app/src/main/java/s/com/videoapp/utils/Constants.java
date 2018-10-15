@@ -18,6 +18,7 @@ public class Constants {
     public static final String USER_LAST_NAME = "USER_LAST_NAME";
     public static final String CURRENT_REQUEST = "CURRENT_REQUEST";
     public static final String SERVED_REQUEST = "SERVED_REQUEST";
+    public static final String IS_LOGGED_IN = "IS_LOGGED_IN";
 
     //TODO: AWS Credentials
     public static final String IDENTITY_POOL_ID = "us-east-1:d63115a9-5bb4-4789-8631-b66043235db6";

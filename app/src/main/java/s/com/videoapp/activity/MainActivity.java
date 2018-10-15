@@ -1,11 +1,16 @@
 package s.com.videoapp.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -46,7 +51,10 @@ import s.com.videoapp.aws.DynamoDBManager;
 import s.com.videoapp.databinding.ActivityMainBinding;
 import s.com.videoapp.databinding.RowVideoBinding;
 import s.com.videoapp.pojo.VideoItem;
+import s.com.videoapp.utils.Constants;
+import s.com.videoapp.utils.ImageFilePath;
 import s.com.videoapp.utils.StoreUserData;
+import s.com.videoapp.utils.Utils;
 
 public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
 
@@ -86,8 +94,21 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         binding.btnSnapShot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, VideoSnapActivity.class);
-                startActivity(intent);
+               /* Intent intent = new Intent(MainActivity.this, VideoSnapActivity.class);
+                startActivity(intent);*/
+               if(!storeUserData.getBoolean(Constants.IS_LOGGED_IN)){
+                   Utils.showAlert(activity,"Please login to upload file.");
+                   return;
+               }
+                if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            11);
+                } else {
+                    Intent galleryIntent = new Intent();
+                    galleryIntent.setType("image/*");
+                    galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(galleryIntent, "Select File"), 101);
+                }
             }
         });
         try {
@@ -106,23 +127,21 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         }
 
         setupAWSMobileClient();
+
+
     }
 
     private void setupAWSMobileClient() {
         try {
-//            amazonClientManager = new AmazonClientManager(activity);
-//            dynamoDBManager = new DynamoDBManager(activity);
-
             CrashHandler.installHandler(this);
-
             new GetDataTask().execute();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void uploadWithTransferUtility() {
+
+    public void uploadWithTransferUtility(String path) {
 
         TransferUtility transferUtility =
                 TransferUtility.builder()
@@ -133,8 +152,8 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
 
         TransferObserver uploadObserver =
                 transferUtility.upload(
-                        "public/s3Key.txt",
-                        new File("/path/to/file/localFile.txt"));
+                        videoId.substring(17) + "/" + System.currentTimeMillis() + new File(path).getName(),
+                        new File(path));
 
         // Attach a listener to the observer to get state update and progress notifications
         uploadObserver.setTransferListener(new TransferListener() {
@@ -153,6 +172,9 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
 
                 Log.d("YourActivity", "ID:" + id + " bytesCurrent: " + bytesCurrent
                         + " bytesTotal: " + bytesTotal + " " + percentDone + "%");
+                if(percentDone==100){
+                    Utils.showAlert(activity,"File uplaoded successfully.");
+                }
             }
 
             @Override
@@ -226,6 +248,18 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RECOVERY_REQUEST) {
             getYouTubePlayerProvider().initialize(API_KEY, this);
+        } else if (requestCode == 101) {
+            if (null == data) {
+                Log.i("data", "null");
+                return;
+            }
+            String selectedImagePath;
+            Uri selectedImageUri = data.getData();
+            //MEDIA GALLERY
+            if (selectedImageUri == null)
+                Log.i("Image File Path", "null");
+            selectedImagePath = ImageFilePath.getPath(getApplicationContext(), selectedImageUri);
+            uploadWithTransferUtility(selectedImagePath);
         }
     }
 

@@ -45,9 +45,6 @@
         <activity android:name=".activity.MainActivity">
 
         </activity>
-        <activity android:name=".activity.LoginActivity">
-
-        </activity>
 
         <activity
             android:name="com.facebook.FacebookActivity"
