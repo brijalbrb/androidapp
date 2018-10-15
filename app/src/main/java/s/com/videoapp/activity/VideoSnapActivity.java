@@ -126,17 +126,7 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
             }
         });
 
-        try {
 
-            JSONObject obj = new JSONObject(loadJSONFromAsset());
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
-            Videopojo request = gson.fromJson(obj.toString(), Videopojo.class);
-            adapter = new VideoAdapter(activity, request.getArray());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
         setupAWSMobileClient();
     }
@@ -199,22 +189,6 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
             }
             return null;
         }
-    }
-
-    public String loadJSONFromAsset() {
-        String json = null;
-        try {
-            InputStream is = activity.getAssets().open("videoapi.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
     }
 
 
