@@ -166,11 +166,11 @@ public class DatabaseAccess {
 
 
             String link, videoThumbnail, year, videoTitle, userId;
-            link = item.get("link").getS();
-            videoThumbnail = item.get("videoThumbnail").getS();
-            year = item.get("year").getN();
-            videoTitle = item.get("videoTitle").getS();
-            userId = item.get("userId").getS();
+            link = item.containsKey("link") ? item.get("link").getS() : "";
+            videoThumbnail = item.containsKey("videoThumbnail") ? item.get("videoThumbnail").getS() : "";
+            year = item.containsKey("year") ? item.get("year").getN() : "";
+            videoTitle = item.containsKey("videoTitle") ? item.get("videoTitle").getS() : "";
+            userId = item.containsKey("userId") ? item.get("userId").getS() : "";
 
 
             VideoItem videoItem = new VideoItem();
@@ -181,14 +181,16 @@ public class DatabaseAccess {
             videoItem.userId = userId;
 
 
-            for (int i = 0; i < item.get("tasks").getL().size(); i++) {
+            if (item.containsKey("tasks")) {
+                for (int i = 0; i < item.get("tasks").getL().size(); i++) {
 
-                VideoItem.Tasks taskinfo = new VideoItem.Tasks();
-                taskinfo.text = item.get("tasks").getL().get(i).getM().get("text").getS();
-                taskinfo.start = item.get("tasks").getL().get(i).getM().get("start").getS();
-                taskinfo.link = item.get("tasks").getL().get(i).getM().get("link").getS();
+                    VideoItem.Tasks taskinfo = new VideoItem.Tasks();
+                    taskinfo.text = item.get("tasks").getL().get(i).getM().get("text").getS();
+                    taskinfo.start = item.get("tasks").getL().get(i).getM().get("start").getS();
+                    taskinfo.link = item.get("tasks").getL().get(i).getM().get("link").getS();
 
-                videoItem.taskArray.add(taskinfo);
+                    videoItem.taskArray.add(taskinfo);
+                }
             }
 
             videoItems.add(videoItem);

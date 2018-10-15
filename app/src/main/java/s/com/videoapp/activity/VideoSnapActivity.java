@@ -89,11 +89,11 @@ public class VideoSnapActivity extends YouTubeBaseActivity implements YouTubePla
             @Override
             public void onClick(View view) {
 
-                View v1 = binding.youtubePlayerS;
+                /*View v1 = binding.youtubePlayerS;
                 v1.setDrawingCacheEnabled(true);
                 bitmap = Bitmap.createBitmap(v1.getDrawingCache());
-                v1.setDrawingCacheEnabled(false);
-                binding.ivSnapShot.setImageBitmap(bitmap);
+                v1.setDrawingCacheEnabled(false);*/
+                binding.ivSnapShot.setImageBitmap(ScreenShot.loadBitmapFromView(binding.relativeLayout));
             }
         });
 

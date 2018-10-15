@@ -37,13 +37,13 @@ public class HomeActivity extends AppCompatActivity {
     private Activity activity;
     private DatabaseAccess databaseAccess;
     HomeAdapter adapter;
-
+    StoreUserData storeUserData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
         binding = DataBindingUtil.setContentView(activity, R.layout.activity_home);
-
+        storeUserData = new StoreUserData(activity);
         setupAWSMobileClient();
 
         findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
@@ -55,6 +55,7 @@ public class HomeActivity extends AppCompatActivity {
                         SignInUI signin = (SignInUI) AWSMobileClient.getInstance().getClient(
                                 activity,
                                 SignInUI.class);
+
                         signin.login(
                                 activity,
                                 HomeActivity.class).execute();
@@ -62,6 +63,7 @@ public class HomeActivity extends AppCompatActivity {
                 }).execute();
             }
         });
+        
 
     }
 
