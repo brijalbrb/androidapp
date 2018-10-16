@@ -54,7 +54,16 @@ public class HomeActivity extends AppCompatActivity {
         findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!storeUserData.getBoolean(Constants.IS_LOGGED_IN)) {
+                if (storeUserData.getBoolean(Constants.IS_LOGGED_IN)) {
+                    storeUserData.setBoolean(Constants.IS_LOGGED_IN, false);
+                    try {
+                        IdentityManager.getDefaultIdentityManager().signOut();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    binding.login.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.password));
+                } else {
+                    binding.login.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.avatar));
                     storeUserData.setBoolean(Constants.IS_LOGGED_IN, true);
                     AWSMobileClient.getInstance().initialize(activity, new AWSStartupHandler() {
                         @Override
@@ -70,14 +79,7 @@ public class HomeActivity extends AppCompatActivity {
 
                         }
                     }).execute();
-                } else {
-                    storeUserData.setBoolean(Constants.IS_LOGGED_IN, false);
-                    try {
-                        IdentityManager.getDefaultIdentityManager().signOut();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    binding.login.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.avatar));
+
                 }
             }
         });
